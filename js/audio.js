@@ -14,10 +14,12 @@ const audio = (function() {
     let currentBgm = null; // 現在再生中のBGM
     
     const bgmList = {
-        'main': 'assets/audio/bgm/main_theme.mp3',
-        'peaceful': 'assets/audio/bgm/peaceful.mp3',
-        'forest': 'assets/audio/bgm/forest.mp3',
-        'beach': 'assets/audio/bgm/beach.mp3'
+        'main': 'assets/audio/main_theme.mp3',
+        'peaceful': 'assets/audio/peaceful.mp3',
+        'forest': 'assets/audio/forest.mp3',
+        'beach': 'assets/audio/beach.mp3',
+        'adventure': 'assets/audio/adventure.mp3',
+        'mystery': 'assets/audio/mystery.mp3'
     };
     
     const sfxList = {
