@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>ペヨーテの旅路</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <div id="game-container">
+        <canvas id="gameCanvas"></canvas>
+        
+        <!-- UI要素 -->
+        <div id="ui-container">
+            <div id="menu-button" class="ui-button">
+                <svg viewBox="0 0 24 24" class="menu-icon">
+                    <line x1="3" y1="6" x2="21" y2="6" stroke="currentColor" stroke-width="2" />
+                    <line x1="3" y1="12" x2="21" y2="12" stroke="currentColor" stroke-width="2" />
+                    <line x1="3" y1="18" x2="21" y2="18" stroke="currentColor" stroke-width="2" />
+                </svg>
+            </div>
+            
+            <div id="sound-button" class="ui-button">
+                <svg viewBox="0 0 24 24" class="sound-icon">
+                    <path d="M3,9H7L12,4V20L7,15H3V9Z" fill="currentColor" />
+                    <path class="sound-wave" d="M16,7C18.76,7 21,9.24 21,12C21,14.76 18.76,17 16,17V15C17.66,15 19,13.66 19,12C19,10.34 17.66,9 16,9V7Z" fill="currentColor" />
+                    <path class="sound-wave" d="M16,3C21.52,3 26,7.48 26,12C26,16.52 21.52,21 16,21V19C20.42,19 24,15.42 24,12C24,8.58 20.42,5 16,5V3Z" fill="currentColor" />
+                </svg>
+            </div>
+        </div>
+        
+        <!-- メニュー画面 -->
+        <div id="menu-screen" class="screen hidden">
+            <div class="menu-header">
+                <h2>メニュー</h2>
+                <div class="close-button">×</div>
+            </div>
+            <div class="menu-items">
+                <div class="menu-item" data-screen="journal">ジャーナル</div>
+                <div class="menu-item" data-screen="collection">コレクション</div>
+                <div class="menu-item" data-screen="settings">設定</div>
+            </div>
+        </div>
+        
+        <!-- ジャーナル画面 -->
+        <div id="journal-screen" class="screen hidden">
+            <div class="screen-header">
+                <h2>ジャーナル</h2>
+                <div class="close-button">×</div>
+            </div>
+            <div class="journal-content"></div>
+        </div>
+        
+        <!-- コレクション画面 -->
+        <div id="collection-screen" class="screen hidden">
+            <div class="screen-header">
+                <h2>コレクション</h2>
+                <div class="close-button">×</div>
+            </div>
+            <div class="collection-grid"></div>
+        </div>
+        
+        <!-- 設定画面 -->
+        <div id="settings-screen" class="screen hidden">
+            <div class="screen-header">
+                <h2>設定</h2>
+                <div class="close-button">×</div>
+            </div>
+            <div class="settings-content">
+                <div class="setting-group">
+                    <label>BGM音量</label>
+                    <input type="range" id="bgm-volume" min="0" max="100" value="60">
+                </div>
+                <div class="setting-group">
+                    <label>効果音音量</label>
+                    <input type="range" id="sfx-volume" min="0" max="100" value="80">
+                </div>
+                <div class="setting-group">
+                    <label>背景画像をアップロード</label>
+                    <input type="file" id="backgroundUpload" accept="image/*">
+                </div>
+                <div class="setting-group">
+                    <button id="reset-button" class="action-button">ゲームデータをリセット</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 対話ポップアップ -->
+        <div id="interaction-popup" class="hidden">
+            <div class="interaction-title">名前</div>
+            <div class="interaction-content">説明文</div>
+            <div class="interaction-options">
+                <button class="interaction-option" data-action="examine">調べる</button>
+                <button class="interaction-option" data-action="pickup">拾う</button>
+            </div>
+        </div>
+        
+        <!-- ロード画面 -->
+        <div id="loading-screen">
+            <div class="loading-content">
+                <h2>ペヨーテの旅路</h2>
+                <div class="loading-spinner"></div>
+                <p>旅の準備をしています...</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- スクリプト読み込み -->
+    <script src="js/storage.js"></script>
+    <script src="js/audio.js"></script>
+    <script src="js/world.js"></script>
+    <script src="js/character.js"></script>
+    <script src="js/interaction.js"></script>
+    <script src="js/journal.js"></script>
+    <script src="js/collection.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>
