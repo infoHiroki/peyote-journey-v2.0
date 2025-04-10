@@ -310,7 +310,7 @@ function loadAssets() {
         // ここで必要な画像や音声をロード
         const assetsToLoad = [
             // 背景画像
-            { type: 'image', id: 'background', src: 'assets/images/world/Song Cover Image 1.jpg' },
+            { type: 'image', id: 'background', src: 'assets/images/world/SongCoverImage1.jpg' },
             
             // キャラクター画像 - 1.pngを使用
             { type: 'image', id: 'character', src: 'assets/images/character/1.png' },
