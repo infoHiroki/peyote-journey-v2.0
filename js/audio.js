@@ -16,20 +16,14 @@ const audio = (function() {
     const bgmList = {
         'main': 'assets/audio/main_theme.mp3',
         'peaceful': 'assets/audio/peaceful.mp3',
-        'forest': 'assets/audio/forest.mp3',
-        'beach': 'assets/audio/beach.mp3',
+        'forest': 'assets/audio/PeyoteNights.mp3',
+        'beach': 'assets/audio/PeyoteNights02.mp3',
         'adventure': 'assets/audio/adventure.mp3',
         'mystery': 'assets/audio/mystery.mp3'
     };
     
     const sfxList = {
-        'walk': 'assets/audio/sfx/walk.mp3',
-        'pickup': 'assets/audio/sfx/pickup.mp3',
-        'discover': 'assets/audio/sfx/discover.mp3',
-        'gift': 'assets/audio/sfx/gift.mp3',
-        'menu_open': 'assets/audio/sfx/menu_open.mp3',
-        'menu_close': 'assets/audio/sfx/menu_close.mp3',
-        'letter': 'assets/audio/sfx/letter.mp3'
+        // 効果音ファイル未整備のため空に設定
     };
     
     // 初期化

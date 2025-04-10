@@ -74,8 +74,13 @@ function initGame() {
         });
     }
     
-    // BGM再生開始
-    audio.playBgm('main');
+    // ユーザー操作でBGMをランダム再生
+    document.addEventListener('click', function onFirstClick() {
+        const bgmCandidates = ['main', 'peaceful', 'forest', 'beach', 'adventure', 'mystery'];
+        const randomKey = bgmCandidates[Math.floor(Math.random() * bgmCandidates.length)];
+        audio.playBgm(randomKey);
+        document.removeEventListener('click', onFirstClick);
+    });
     
     // 定期的な保存
     setInterval(function() {
