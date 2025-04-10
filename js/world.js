@@ -43,13 +43,22 @@ const world = (function() {
                 worldHeight = origBgHeight * bgScaleFactor;
                 
                 // 新しいオブジェクトの配置（拡大後の背景サイズに基づいて）
+                const charImages = [];
+                for (let i = 2; i <= 20; i++) {
+                    charImages.push('char' + i);
+                }
+
+                function randomCharImage() {
+                    return charImages[Math.floor(Math.random() * charImages.length)];
+                }
+
                 worldObjects = [
                     {
                         id: "flower1",
-                        x: worldWidth * 0.2, // 幅の20%の位置
-                        y: worldHeight * 0.3, // 高さの30%の位置
+                        x: worldWidth * 0.2,
+                        y: worldHeight * 0.3,
                         type: "item",
-                        image: "flower",
+                        image: randomCharImage(),
                         name: "ひまわり",
                         description: "明るく輝く黄色い花",
                         radius: 25,
@@ -57,10 +66,10 @@ const world = (function() {
                     },
                     {
                         id: "stone1",
-                        x: worldWidth * 0.8, // 幅の80%の位置
-                        y: worldHeight * 0.7, // 高さの70%の位置
+                        x: worldWidth * 0.8,
+                        y: worldHeight * 0.7,
                         type: "item",
-                        image: "stone",
+                        image: randomCharImage(),
                         name: "不思議な石",
                         description: "模様が美しい丸い石",
                         radius: 20,
@@ -68,10 +77,10 @@ const world = (function() {
                     },
                     {
                         id: "rabbit1",
-                        x: worldWidth * 0.5, // 幅の中央
-                        y: worldHeight * 0.4, // 高さの40%の位置
+                        x: worldWidth * 0.5,
+                        y: worldHeight * 0.4,
                         type: "character",
-                        image: "rabbit",
+                        image: randomCharImage(),
                         name: "森のうさぎ",
                         description: "白いうさぎがこちらを見ています",
                         dialogue: "こんにちは、旅人さん。広い世界を旅しているんですね。",
@@ -79,13 +88,12 @@ const world = (function() {
                         canTalk: true,
                         acceptsGifts: true
                     },
-                    // より広い世界感のためにオブジェクトを追加
                     {
                         id: "flower2",
                         x: worldWidth * 0.3,
                         y: worldHeight * 0.8,
                         type: "item",
-                        image: "flower",
+                        image: randomCharImage(),
                         name: "野の花",
                         description: "野原に咲く可憐な花",
                         radius: 25,
@@ -96,7 +104,7 @@ const world = (function() {
                         x: worldWidth * 0.1,
                         y: worldHeight * 0.6,
                         type: "item",
-                        image: "stone",
+                        image: randomCharImage(),
                         name: "古い石",
                         description: "長い時を経た石",
                         radius: 20,
@@ -110,6 +118,41 @@ const world = (function() {
                     // デフォルト位置のままなら中央に配置
                     character.moveTo(worldWidth * 0.5, worldHeight * 0.6);
                     character.stopMoving();
+                }
+
+                // 追加のキャラ・アイテムをランダム配置して出現頻度アップ
+                for (let i = 0; i < 20; i++) {
+                    const type = Math.random() < 0.5 ? 'item' : 'character';
+                    const id = `${type}_extra_${i}`;
+                    const x = Math.random() * worldWidth;
+                    const y = Math.random() * worldHeight;
+                    if (type === 'item') {
+                        worldObjects.push({
+                            id,
+                            x,
+                            y,
+                            type: 'item',
+                            image: 'flower',
+                            name: '野の花',
+                            description: '野原に咲く可憐な花',
+                            radius: 25,
+                            canPickup: true
+                        });
+                    } else {
+                        worldObjects.push({
+                            id,
+                            x,
+                            y,
+                            type: 'character',
+                            image: 'rabbit',
+                            name: '森のうさぎ',
+                            description: '白いうさぎがこちらを見ています',
+                            dialogue: 'こんにちは、旅人さん。',
+                            radius: 30,
+                            canTalk: true,
+                            acceptsGifts: true
+                        });
+                    }
                 }
             }
         }, 300); // 少し遅延させて背景画像のロードを待つ

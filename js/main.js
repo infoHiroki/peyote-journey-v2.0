@@ -54,6 +54,11 @@ function initGame() {
     // 保存データのロード
     if (storage.hasGameData()) {
         const gameData = storage.loadGameData();
+
+        // ワールドとキャラは初期化、ジャーナルとコレクションは保持
+        gameData.world = null;
+        gameData.character = null;
+
         world.loadState(gameData.world);
         character.loadState(gameData.character);
         journal.loadState(gameData.journal);
@@ -313,17 +318,43 @@ function saveGameState() {
 function loadAssets() {
     return new Promise((resolve) => {
         // ここで必要な画像や音声をロード
+        const bgImages = [
+            'assets/images/world/SongCoverImage1.jpg',
+            'assets/images/world/SongCoverImage2.jpg',
+            'assets/images/world/SongCoverImage3.jpg',
+            'assets/images/world/SongCoverImage4.jpg',
+            'assets/images/world/SongCoverImage5.jpg',
+            'assets/images/world/SongCoverImage6.jpg'
+        ];
+        const randomBg = bgImages[Math.floor(Math.random() * bgImages.length)];
+
         const assetsToLoad = [
-            // 背景画像
-            { type: 'image', id: 'background', src: 'assets/images/world/SongCoverImage1.jpg' },
+            // 背景画像（ランダム）
+            { type: 'image', id: 'background', src: randomBg },
             
-            // キャラクター画像 - 1.pngを使用
+            // 主人公キャラ画像
             { type: 'image', id: 'character', src: 'assets/images/character/1.png' },
             
-            // アイテム画像
-            { type: 'image', id: 'flower', src: 'assets/images/character/5.png' },
-            { type: 'image', id: 'stone', src: 'assets/images/character/6.png' },
-            { type: 'image', id: 'rabbit', src: 'assets/images/character/7.png' }
+            // アイテム・キャラ用画像（2〜20を全部ロード）
+            { type: 'image', id: 'char2', src: 'assets/images/character/2.png' },
+            { type: 'image', id: 'char3', src: 'assets/images/character/3.png' },
+            { type: 'image', id: 'char4', src: 'assets/images/character/4.png' },
+            { type: 'image', id: 'char5', src: 'assets/images/character/5.png' },
+            { type: 'image', id: 'char6', src: 'assets/images/character/6.png' },
+            { type: 'image', id: 'char7', src: 'assets/images/character/7.png' },
+            { type: 'image', id: 'char8', src: 'assets/images/character/8.png' },
+            { type: 'image', id: 'char9', src: 'assets/images/character/9.png' },
+            { type: 'image', id: 'char10', src: 'assets/images/character/10.png' },
+            { type: 'image', id: 'char11', src: 'assets/images/character/11.png' },
+            { type: 'image', id: 'char12', src: 'assets/images/character/12.png' },
+            { type: 'image', id: 'char13', src: 'assets/images/character/13.png' },
+            { type: 'image', id: 'char14', src: 'assets/images/character/14.png' },
+            { type: 'image', id: 'char15', src: 'assets/images/character/15.png' },
+            { type: 'image', id: 'char16', src: 'assets/images/character/16.png' },
+            { type: 'image', id: 'char17', src: 'assets/images/character/17.png' },
+            { type: 'image', id: 'char18', src: 'assets/images/character/18.png' },
+            { type: 'image', id: 'char19', src: 'assets/images/character/19.png' },
+            { type: 'image', id: 'char20', src: 'assets/images/character/20.png' }
         ];
         
         let loadedCount = 0;
@@ -404,6 +435,9 @@ function loadCustomBackground() {
 // ゲーム開始時の処理
 window.onload = async function() {
     try {
+        // 保存済みゲームデータをクリアして新しいワールドを生成
+        storage.clearGameData();
+
         await loadAssets();
         await loadCustomBackground();
         initGame();
