@@ -112,14 +112,12 @@ const world = (function() {
                     }
                 ];
                 
-                // キャラクターの初期位置も調整（キャラクターが利用可能な場合）
-                if (typeof character !== 'undefined' && character.getPosition) {
-                    const characterPos = character.getPosition();
-                    if (characterPos.x === 2500 && characterPos.y === 1500) {
-                        // デフォルト位置のままなら中央に配置
-                        character.moveTo(worldWidth * 0.5, worldHeight * 0.6);
-                        character.stopMoving();
-                    }
+                // キャラクターの初期位置も調整
+                const characterPos = character.getPosition();
+                if (characterPos.x === 2500 && characterPos.y === 1500) {
+                    // デフォルト位置のままなら中央に配置
+                    character.moveTo(worldWidth * 0.5, worldHeight * 0.6);
+                    character.stopMoving();
                 }
 
                 // 追加のキャラ・アイテムをランダム配置して出現頻度アップ
@@ -173,14 +171,12 @@ const world = (function() {
             worldHeight = origBgHeight * bgScaleFactor;
         }
         
-        // キャラクターの位置に基づいてカメラを更新（キャラクターが利用可能な場合）
-        if (typeof character !== 'undefined' && character.getPosition) {
-            const characterPos = character.getPosition();
-            
-            // カメラの更新（キャラクターを中心に）
-            cameraX = characterPos.x - viewportWidth / 2;
-            cameraY = characterPos.y - viewportHeight / 2;
-        }
+        // キャラクターの位置に基づいてカメラを更新
+        const characterPos = character.getPosition();
+        
+        // カメラの更新（キャラクターを中心に）
+        cameraX = characterPos.x - viewportWidth / 2;
+        cameraY = characterPos.y - viewportHeight / 2;
         
         // カメラが世界の外に出ないように制限
         cameraX = Math.max(0, Math.min(cameraX, worldWidth - viewportWidth));
@@ -468,20 +464,14 @@ const world = (function() {
         ctx.strokeRect(vpX, vpY, vpW, vpH);
         
         // プレイヤーの位置
-        // キャラクターが定義されているか確認
-if (typeof character !== 'undefined' && character.getPosition) {
-            const playerPos = character.getPosition();
-            const playerX = x + playerPos.x * scaleX;
-            const playerY = y + playerPos.y * scaleY;
+        const playerPos = character.getPosition();
+        const playerX = x + playerPos.x * scaleX;
+        const playerY = y + playerPos.y * scaleY;
         
         ctx.fillStyle = 'rgba(255, 0, 0, 0.8)';
         ctx.beginPath();
         ctx.arc(playerX, playerY, 4, 0, Math.PI * 2);
         ctx.fill();
-        } else {
-            // キャラクターが利用できない場合はスキップ
-            console.log('Character not available for minimap');
-        }
         
         // オブジェクトも表示
         worldObjects.forEach(obj => {
@@ -523,118 +513,113 @@ if (typeof character !== 'undefined' && character.getPosition) {
         mapCanvas.height = mapHeight;
         
         const mapCtx = mapCanvas.getContext('2d');
+        
+        // マップ背景
+        mapCtx.fillStyle = '#f0f7f1';
+        mapCtx.fillRect(0, 0, mapWidth, mapHeight);
+        
+        // 縮尺を計算
+        const padding = 20;
+        const contentWidth = mapWidth - padding * 2;
+        const contentHeight = mapHeight - padding * 2;
+        
+        const scaleX = contentWidth / worldWidth;
+        const scaleY = contentHeight / worldHeight;
+        const scale = Math.min(scaleX, scaleY);
+        
+        // 中央に配置するための計算
+        const scaledWidth = worldWidth * scale;
+        const scaledHeight = worldHeight * scale;
+        const offsetX = (mapWidth - scaledWidth) / 2;
+        const offsetY = (mapHeight - scaledHeight) / 2;
+        
+        // 背景画像の描画
+        if (assets.background) {
+            mapCtx.drawImage(
+                assets.background,
+                offsetX, offsetY,
+                scaledWidth, scaledHeight
+            );
+        } else {
+            // 背景画像がない場合はシンプルな背景
+            mapCtx.fillStyle = '#e0efe2';
+            mapCtx.fillRect(offsetX, offsetY, scaledWidth, scaledHeight);
+        }
+        
+        // オブジェクト描画
+        worldObjects.forEach(obj => {
+            const objX = offsetX + obj.x * scale;
+            const objY = offsetY + obj.y * scale;
             
-            // マップ背景
-            mapCtx.fillStyle = '#f0f7f1';
-            mapCtx.fillRect(0, 0, mapWidth, mapHeight);
-            
-            // 縮尺を計算
-            const padding = 20;
-            const contentWidth = mapWidth - padding * 2;
-            const contentHeight = mapHeight - padding * 2;
-            
-            const scaleX = contentWidth / worldWidth;
-            const scaleY = contentHeight / worldHeight;
-            const scale = Math.min(scaleX, scaleY);
-            
-            // 中央に配置するための計算
-            const scaledWidth = worldWidth * scale;
-            const scaledHeight = worldHeight * scale;
-            const offsetX = (mapWidth - scaledWidth) / 2;
-            const offsetY = (mapHeight - scaledHeight) / 2;
-            
-            // 背景画像の描画
-            if (assets.background) {
-                mapCtx.drawImage(
-                    assets.background,
-                    offsetX, offsetY,
-                    scaledWidth, scaledHeight
-                );
+            // オブジェクトの種類に応じた色
+            if (obj.type === 'item') {
+                mapCtx.fillStyle = '#ffc107';
+            } else if (obj.type === 'character') {
+                mapCtx.fillStyle = '#2196f3';
             } else {
-                // 背景画像がない場合はシンプルな背景
-                mapCtx.fillStyle = '#e0efe2';
-                mapCtx.fillRect(offsetX, offsetY, scaledWidth, scaledHeight);
+                mapCtx.fillStyle = '#9e9e9e';
             }
             
-            // オブジェクト描画
-            worldObjects.forEach(obj => {
-                const objX = offsetX + obj.x * scale;
-                const objY = offsetY + obj.y * scale;
-                
-                // オブジェクトの種類に応じた色
-                if (obj.type === 'item') {
-                    mapCtx.fillStyle = '#ffc107';
-                } else if (obj.type === 'character') {
-                    mapCtx.fillStyle = '#2196f3';
-                } else {
-                    mapCtx.fillStyle = '#9e9e9e';
-                }
-                
-                // オブジェクト表示
-                mapCtx.beginPath();
-                mapCtx.arc(objX, objY, 5, 0, Math.PI * 2);
-                mapCtx.fill();
-                
-                // ラベル表示（オプション）
-                if (scale > 0.1) { // 一定以上の拡大率の場合のみ名前を表示
-                    mapCtx.fillStyle = 'rgba(0, 0, 0, 0.7)';
-                    mapCtx.font = '10px sans-serif';
-                    mapCtx.fillText(obj.name, objX + 7, objY + 3);
-                }
-            });
-            
-            // プレイヤー位置（キャラクターが利用可能な場合）
-        if (typeof character !== 'undefined' && character.getPosition) {
-            const playerPos = character.getPosition();
-            const playerX = offsetX + playerPos.x * scale;
-            const playerY = offsetY + playerPos.y * scale;
-            
-            mapCtx.fillStyle = '#e53935';
+            // オブジェクト表示
             mapCtx.beginPath();
-            mapCtx.arc(playerX, playerY, 7, 0, Math.PI * 2);
+            mapCtx.arc(objX, objY, 5, 0, Math.PI * 2);
             mapCtx.fill();
-        } else {
-            // キャラクターが利用できない場合はスキップ
-            console.log('Character not available for map');
-        }
             
-            // 現在のビューポートを表示
-            const vpX = offsetX + cameraX * scale;
-            const vpY = offsetY + cameraY * scale;
-            const vpW = viewportWidth * scale;
-            const vpH = viewportHeight * scale;
-            
-            mapCtx.strokeStyle = 'rgba(255, 255, 255, 0.8)';
-            mapCtx.lineWidth = 2;
-            mapCtx.strokeRect(vpX, vpY, vpW, vpH);
-            
-            // 凡例の表示
-            const legendY = mapHeight - 40;
-            
-            mapCtx.fillStyle = 'rgba(0, 0, 0, 0.7)';
-            mapCtx.font = '12px sans-serif';
-            
-            mapCtx.fillStyle = '#e53935';
-            mapCtx.beginPath();
-            mapCtx.arc(30, legendY, 5, 0, Math.PI * 2);
-            mapCtx.fill();
-            mapCtx.fillStyle = 'black';
-            mapCtx.fillText('プレイヤー', 40, legendY + 4);
-            
-            mapCtx.fillStyle = '#2196f3';
-            mapCtx.beginPath();
-            mapCtx.arc(120, legendY, 5, 0, Math.PI * 2);
-            mapCtx.fill();
-            mapCtx.fillStyle = 'black';
-            mapCtx.fillText('キャラクター', 130, legendY + 4);
-            
-            mapCtx.fillStyle = '#ffc107';
-            mapCtx.beginPath();
-            mapCtx.arc(220, legendY, 5, 0, Math.PI * 2);
-            mapCtx.fill();
-            mapCtx.fillStyle = 'black';
-            mapCtx.fillText('アイテム', 230, legendY + 4);
-        }
+            // ラベル表示（オプション）
+            if (scale > 0.1) { // 一定以上の拡大率の場合のみ名前を表示
+                mapCtx.fillStyle = 'rgba(0, 0, 0, 0.7)';
+                mapCtx.font = '10px sans-serif';
+                mapCtx.fillText(obj.name, objX + 7, objY + 3);
+            }
+        });
+        
+        // プレイヤー位置
+        const playerPos = character.getPosition();
+        const playerX = offsetX + playerPos.x * scale;
+        const playerY = offsetY + playerPos.y * scale;
+        
+        mapCtx.fillStyle = '#e53935';
+        mapCtx.beginPath();
+        mapCtx.arc(playerX, playerY, 7, 0, Math.PI * 2);
+        mapCtx.fill();
+        
+        // 現在のビューポートを表示
+        const vpX = offsetX + cameraX * scale;
+        const vpY = offsetY + cameraY * scale;
+        const vpW = viewportWidth * scale;
+        const vpH = viewportHeight * scale;
+        
+        mapCtx.strokeStyle = 'rgba(255, 255, 255, 0.8)';
+        mapCtx.lineWidth = 2;
+        mapCtx.strokeRect(vpX, vpY, vpW, vpH);
+        
+        // 凡例の表示
+        const legendY = mapHeight - 40;
+        
+        mapCtx.fillStyle = 'rgba(0, 0, 0, 0.7)';
+        mapCtx.font = '12px sans-serif';
+        
+        mapCtx.fillStyle = '#e53935';
+        mapCtx.beginPath();
+        mapCtx.arc(30, legendY, 5, 0, Math.PI * 2);
+        mapCtx.fill();
+        mapCtx.fillStyle = 'black';
+        mapCtx.fillText('プレイヤー', 40, legendY + 4);
+        
+        mapCtx.fillStyle = '#2196f3';
+        mapCtx.beginPath();
+        mapCtx.arc(120, legendY, 5, 0, Math.PI * 2);
+        mapCtx.fill();
+        mapCtx.fillStyle = 'black';
+        mapCtx.fillText('キャラクター', 130, legendY + 4);
+        
+        mapCtx.fillStyle = '#ffc107';
+        mapCtx.beginPath();
+        mapCtx.arc(220, legendY, 5, 0, Math.PI * 2);
+        mapCtx.fill();
+        mapCtx.fillStyle = 'black';
+        mapCtx.fillText('アイテム', 230, legendY + 4);
+    }
 
     // モジュールの公開API
     return {
