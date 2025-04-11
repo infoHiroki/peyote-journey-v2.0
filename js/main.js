@@ -243,38 +243,50 @@ function setupTouchControls(canvas) {
 
 // メインゲームループ
 function gameLoop(timestamp) {
-    // 前回からの経過時間（ミリ秒）
-    const deltaTime = timestamp - lastTimestamp;
-    lastTimestamp = timestamp;
-    
-    // ゲームが初期化されていない場合はループを続ける
-    if (!isGameInitialized) {
+    try {
+        // 前回からの経過時間（ミリ秒）
+        const deltaTime = timestamp - lastTimestamp;
+        lastTimestamp = timestamp;
+        
+        // ゲームが初期化されていない場合はループを続ける
+        if (!isGameInitialized) {
+            requestAnimationFrame(gameLoop);
+            return;
+        }
+        
+        // キャンバス取得
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        
+        // 画面クリア
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        
+        // 押下中なら移動先を更新し続ける
+        if (isPressing) {
+            moveCharacterToPosition(lastTouchX, lastTouchY);
+        }
+        
+        // ワールド更新と描画
+        world.update(deltaTime);
+        world.draw(ctx);
+        
+        // キャラクター更新と描画
+        character.update(deltaTime);
+        character.draw(ctx);
+        
+        // デバッグ情報の表示（1%の確率で表示）
+        if (Math.random() < 0.005) {
+            const characterPos = character.getPosition();
+            console.log(`キャラクター位置: (${Math.round(characterPos.x)}, ${Math.round(characterPos.y)})`);
+        }
+        
+        // ゲームループ継続
         requestAnimationFrame(gameLoop);
-        return;
+    } catch (e) {
+        console.error("Game loop error:", e);
+        // エラーがあってもループを継続
+        requestAnimationFrame(gameLoop);
     }
-    
-    // キャンバス取得
-    const canvas = document.getElementById('gameCanvas');
-    const ctx = canvas.getContext('2d');
-    
-    // 画面クリア
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    
-    // 押下中なら移動先を更新し続ける
-    if (isPressing) {
-        moveCharacterToPosition(lastTouchX, lastTouchY);
-    }
-    
-    // ワールド更新と描画
-    world.update(deltaTime);
-    world.draw(ctx);
-    
-    // キャラクター更新と描画
-    character.update(deltaTime);
-    character.draw(ctx);
-    
-    // ゲームループ継続
-    requestAnimationFrame(gameLoop);
 }
 
 // カーソル位置にキャラクターを移動

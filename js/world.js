@@ -132,7 +132,7 @@ const world = (function() {
                             x,
                             y,
                             type: 'item',
-                            image: 'flower',
+                            image: randomCharImage(), // 正しい画像IDを設定
                             name: '野の花',
                             description: '野原に咲く可憐な花',
                             radius: 25,
@@ -144,7 +144,7 @@ const world = (function() {
                             x,
                             y,
                             type: 'character',
-                            image: 'rabbit',
+                            image: randomCharImage(), // 正しい画像IDを設定
                             name: '森のうさぎ',
                             description: '白いうさぎがこちらを見ています',
                             dialogue: 'こんにちは、旅人さん。',
@@ -154,6 +154,9 @@ const world = (function() {
                         });
                     }
                 }
+                
+                // デバッグログでオブジェクト数を確認
+                console.log(`ワールドに${worldObjects.length}個のオブジェクトを配置しました`);
             }
         }, 300); // 少し遅延させて背景画像のロードを待つ
     }

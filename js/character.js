@@ -36,6 +36,10 @@ const character = (function() {
     
     // 更新処理
     function update(deltaTime) {
+        // 移動前の位置を記録
+        const prevX = x;
+        const prevY = y;
+        
         // 移動処理
         if (isMoving) {
             // 目標地点までの距離を計算
@@ -56,6 +60,11 @@ const character = (function() {
                 if (moveX !== 0) {
                     direction = moveX > 0 ? 'right' : 'left';
                 }
+                
+                // 移動中も定期的に接触チェック（5フレームに1回）
+                if (Math.random() < 0.2) {
+                    checkInteraction();
+                }
             } else {
                 // 目標に到達
                 x = targetX;
@@ -64,6 +73,54 @@ const character = (function() {
                 
                 // 到着イベント発火
                 onArrival();
+            }
+        }
+    }
+    
+    // オブジェクトとの接触チェック
+    function checkInteraction() {
+        // 広い検出範囲で周辺オブジェクトをチェック
+        const interactionRadius = 60;
+        const nearbyObject = world.getObjectNear(x, y, interactionRadius);
+        
+        if (nearbyObject) {
+            // 近くにオブジェクトがある場合は移動を止めて対話を開始
+            stopMoving();
+            
+            // インタラクションポップアップを表示
+            if (typeof interaction !== 'undefined' && interaction.showInteractionPopup) {
+                // デバッグログ
+                console.log("オブジェクトと接触:", nearbyObject.name);
+                
+                // インタラクションを表示
+                interaction.showInteractionPopup(nearbyObject);
+                
+                // 効果音を再生（存在する場合）
+                if (typeof audio !== 'undefined' && audio.playSfx) {
+                    try {
+                        audio.playSfx('discover');
+                    } catch (e) {
+                        console.log("SFX playback failed:", e);
+                    }
+                }
+                
+                // ビジュアルフィードバック（通知マーカー）の表示
+                const interactionMarker = document.createElement('div');
+                interactionMarker.className = 'interaction-marker';
+                interactionMarker.innerHTML = '!';
+                document.getElementById('game-container').appendChild(interactionMarker);
+                
+                // マーカーの位置を設定
+                const screenPos = world.worldToScreenCoordinates(nearbyObject.x, nearbyObject.y);
+                interactionMarker.style.left = `${screenPos.x}px`;
+                interactionMarker.style.top = `${screenPos.y - 40}px`; // 少し上に表示
+                
+                // 一定時間後に消去
+                setTimeout(() => {
+                    if (interactionMarker.parentNode) {
+                        interactionMarker.parentNode.removeChild(interactionMarker);
+                    }
+                }, 2000);
             }
         }
     }
@@ -160,44 +217,8 @@ const character = (function() {
     
     // 目標地点到着時の処理
     function onArrival() {
-        // 到着地点のオブジェクト検出（検出範囲を広げる）
-        const interactionRadius = 50; // より広い接触検出範囲
-        const nearbyObject = world.getObjectNear(x, y, interactionRadius);
-        
-        if (nearbyObject) {
-            // オブジェクトとの接触時に自動的にインタラクションポップアップを表示
-            if (typeof interaction !== 'undefined' && interaction.showInteractionPopup) {
-                // インタラクションを表示
-                interaction.showInteractionPopup(nearbyObject);
-                
-                // 効果音を再生（存在する場合）
-                if (typeof audio !== 'undefined' && audio.playSfx) {
-                    try {
-                        audio.playSfx('discover');
-                    } catch (e) {
-                        console.log("SFX playback failed:", e);
-                    }
-                }
-            }
-            
-            // 通知マーカーも表示
-            const interactionMarker = document.createElement('div');
-            interactionMarker.className = 'interaction-marker';
-            interactionMarker.innerHTML = '!';
-            document.getElementById('game-container').appendChild(interactionMarker);
-            
-            // マーカーの位置を設定
-            const screenPos = world.worldToScreenCoordinates(nearbyObject.x, nearbyObject.y);
-            interactionMarker.style.left = `${screenPos.x}px`;
-            interactionMarker.style.top = `${screenPos.y - 40}px`; // 少し上に表示
-            
-            // 一定時間後に消去 (マーカーのみ消去、ポップアップは残す)
-            setTimeout(() => {
-                if (interactionMarker.parentNode) {
-                    interactionMarker.parentNode.removeChild(interactionMarker);
-                }
-            }, 2000);
-        }
+        // 接触チェックを実行
+        checkInteraction();
     }
     
     // ステート保存
