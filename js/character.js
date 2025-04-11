@@ -61,8 +61,8 @@ const character = (function() {
                     direction = moveX > 0 ? 'right' : 'left';
                 }
                 
-                // 移動中も定期的に接触チェック（5フレームに1回）
-                if (Math.random() < 0.2) {
+                // 移動中も低確率で接触チェック（50フレームに1回程度）
+                if (Math.random() < 0.02) {
                     checkInteraction();
                 }
             } else {
@@ -77,15 +77,32 @@ const character = (function() {
         }
     }
     
+    // 最後に接触したオブジェクトのID
+    let lastInteractedObjectId = null;
+    // 次の接触チェックを許可する時間
+    let nextInteractionTime = 0;
+    
     // オブジェクトとの接触チェック
     function checkInteraction() {
+        // 時間制限をチェック - 連続接触の防止
+        const now = Date.now();
+        if (now < nextInteractionTime) {
+            return;
+        }
+        
         // 広い検出範囲で周辺オブジェクトをチェック
         const interactionRadius = 60;
         const nearbyObject = world.getObjectNear(x, y, interactionRadius);
         
-        if (nearbyObject) {
+        // オブジェクトが見つかり、かつ前回と異なるオブジェクトか3秒以上経過していること
+        if (nearbyObject && (nearbyObject.id !== lastInteractedObjectId || now > nextInteractionTime + 3000)) {
             // 近くにオブジェクトがある場合は移動を止めて対話を開始
             stopMoving();
+            
+            // 最後に接触したオブジェクトを更新
+            lastInteractedObjectId = nearbyObject.id;
+            // 次の接触までのクールダウン（2秒）
+            nextInteractionTime = now + 2000;
             
             // インタラクションポップアップを表示
             if (typeof interaction !== 'undefined' && interaction.showInteractionPopup) {
@@ -105,6 +122,15 @@ const character = (function() {
                 }
                 
                 // ビジュアルフィードバック（通知マーカー）の表示
+                // 既存のマーカーを削除
+                const existingMarkers = document.querySelectorAll('.interaction-marker');
+                existingMarkers.forEach(marker => {
+                    if (marker.parentNode) {
+                        marker.parentNode.removeChild(marker);
+                    }
+                });
+                
+                // 新しいマーカーを表示
                 const interactionMarker = document.createElement('div');
                 interactionMarker.className = 'interaction-marker';
                 interactionMarker.innerHTML = '!';
