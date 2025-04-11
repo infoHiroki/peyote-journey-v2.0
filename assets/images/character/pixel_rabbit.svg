@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+  <!-- 体 -->
+  <rect x="12" y="16" width="8" height="8" fill="#FFFFFF" />
+  <!-- 頭 -->
+  <rect x="12" y="8" width="8" height="8" fill="#FFFFFF" />
+  <!-- 耳 -->
+  <rect x="8" y="4" width="4" height="8" fill="#FFFFFF" />
+  <rect x="20" y="4" width="4" height="8" fill="#FFFFFF" />
+  <!-- 目 -->
+  <rect x="12" y="12" width="2" height="2" fill="#FF0000" />
+  <rect x="18" y="12" width="2" height="2" fill="#FF0000" />
+  <!-- 鼻 -->
+  <rect x="14" y="14" width="4" height="2" fill="#FFB6C1" />
+  <!-- 足 -->
+  <rect x="10" y="24" width="4" height="4" fill="#FFFFFF" />
+  <rect x="18" y="24" width="4" height="4" fill="#FFFFFF" />
+</svg>

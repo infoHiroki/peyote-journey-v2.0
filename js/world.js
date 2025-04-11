@@ -52,13 +52,30 @@ const world = (function() {
                     return charImages[Math.floor(Math.random() * charImages.length)];
                 }
 
+                // ピクセルアート画像の読み込み
+                const itemImages = ['flower', 'stone', 'crystal'];
+                const characterImages = ['pixel_rabbit', 'pixel_fox'];
+                
+                // SVG画像をアセットに読み込む
+                for (const img of itemImages) {
+                    const imgElement = new Image();
+                    imgElement.src = `assets/images/item/${img}.svg`;
+                    assets[`item_${img}`] = imgElement;
+                }
+                
+                for (const img of characterImages) {
+                    const imgElement = new Image();
+                    imgElement.src = `assets/images/character/${img}.svg`;
+                    assets[`char_${img}`] = imgElement;
+                }
+
                 worldObjects = [
                     {
                         id: "flower1",
                         x: worldWidth * 0.2,
                         y: worldHeight * 0.3,
                         type: "item",
-                        image: randomCharImage(),
+                        image: "item_flower",
                         name: "ひまわり",
                         description: "明るく輝く黄色い花",
                         radius: 25,
@@ -69,7 +86,7 @@ const world = (function() {
                         x: worldWidth * 0.8,
                         y: worldHeight * 0.7,
                         type: "item",
-                        image: randomCharImage(),
+                        image: "item_stone",
                         name: "不思議な石",
                         description: "模様が美しい丸い石",
                         radius: 20,
@@ -80,7 +97,7 @@ const world = (function() {
                         x: worldWidth * 0.5,
                         y: worldHeight * 0.4,
                         type: "character",
-                        image: randomCharImage(),
+                        image: "char_pixel_rabbit",
                         name: "森のうさぎ",
                         description: "白いうさぎがこちらを見ています",
                         dialogue: "こんにちは、旅人さん。広い世界を旅しているんですね。",
@@ -89,26 +106,28 @@ const world = (function() {
                         acceptsGifts: true
                     },
                     {
-                        id: "flower2",
+                        id: "crystal1",
                         x: worldWidth * 0.3,
                         y: worldHeight * 0.8,
                         type: "item",
-                        image: randomCharImage(),
-                        name: "野の花",
-                        description: "野原に咲く可憐な花",
+                        image: "item_crystal",
+                        name: "輝く結晶",
+                        description: "神秘的な力を秘めた紫色の結晶",
                         radius: 25,
                         canPickup: true
                     },
                     {
-                        id: "stone2",
+                        id: "fox1",
                         x: worldWidth * 0.1,
                         y: worldHeight * 0.6,
-                        type: "item",
-                        image: randomCharImage(),
-                        name: "古い石",
-                        description: "長い時を経た石",
-                        radius: 20,
-                        canPickup: true
+                        type: "character",
+                        image: "char_pixel_fox",
+                        name: "キツネ",
+                        description: "オレンジ色の毛並みが美しいキツネ",
+                        dialogue: "こんにちは、旅人。何か面白いものを見つけた？",
+                        radius: 30,
+                        canTalk: true,
+                        acceptsGifts: true
                     }
                 ];
                 
@@ -120,34 +139,66 @@ const world = (function() {
                     character.stopMoving();
                 }
 
-                // 追加のキャラ・アイテムをランダム配置して出現頻度アップ
+                // 追加のオブジェクトをランダム配置
                 for (let i = 0; i < 20; i++) {
                     const type = Math.random() < 0.5 ? 'item' : 'character';
                     const id = `${type}_extra_${i}`;
                     const x = Math.random() * worldWidth;
                     const y = Math.random() * worldHeight;
+                    
                     if (type === 'item') {
+                        // アイテムをランダムに選択
+                        const randomItemImage = itemImages[Math.floor(Math.random() * itemImages.length)];
+                        let itemName, itemDesc;
+                        
+                        // アイテムのタイプに合わせた名前と説明
+                        if (randomItemImage === 'flower') {
+                            itemName = '野の花';
+                            itemDesc = '野原に咲く可憐な花';
+                        } else if (randomItemImage === 'stone') {
+                            itemName = '古い石';
+                            itemDesc = '長い時を経た石';
+                        } else if (randomItemImage === 'crystal') {
+                            itemName = '神秘の結晶';
+                            itemDesc = '不思議な力を秘めた結晶';
+                        }
+                        
                         worldObjects.push({
                             id,
                             x,
                             y,
                             type: 'item',
-                            image: randomCharImage(), // 正しい画像IDを設定
-                            name: '野の花',
-                            description: '野原に咲く可憐な花',
+                            image: `item_${randomItemImage}`,
+                            name: itemName,
+                            description: itemDesc,
                             radius: 25,
                             canPickup: true
                         });
                     } else {
+                        // キャラクターをランダムに選択
+                        const randomCharImage = characterImages[Math.floor(Math.random() * characterImages.length)];
+                        let charName, charDesc, charDialogue;
+                        
+                        // キャラクタータイプに合わせた名前と説明
+                        if (randomCharImage === 'pixel_rabbit') {
+                            charName = '森のうさぎ';
+                            charDesc = '白いうさぎがこちらを見ています';
+                            charDialogue = 'こんにちは、旅人さん。';
+                        } else if (randomCharImage === 'pixel_fox') {
+                            charName = '野生のキツネ';
+                            charDesc = '好奇心旺盛なキツネ';
+                            charDialogue = '何か面白いものを見つけた？';
+                        }
+                        
                         worldObjects.push({
                             id,
                             x,
                             y,
                             type: 'character',
-                            image: randomCharImage(), // 正しい画像IDを設定
-                            name: '森のうさぎ',
-                            description: '白いうさぎがこちらを見ています',
-                            dialogue: 'こんにちは、旅人さん。',
+                            image: `char_${randomCharImage}`,
+                            name: charName,
+                            description: charDesc,
+                            dialogue: charDialogue,
                             radius: 30,
                             canTalk: true,
                             acceptsGifts: true
