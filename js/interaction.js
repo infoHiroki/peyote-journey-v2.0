@@ -174,15 +174,9 @@ const interaction = (function() {
         const content = popup.querySelector('.interaction-content');
         content.textContent = currentObject.dialogue || "...";
         
-        // アクションボタンを閉じるボタンに変更
+        // アクションボタン領域を空にする（閉じるは右上のバツで行う）
         const options = popup.querySelector('.interaction-options');
         options.innerHTML = '';
-        
-        const closeBtn = document.createElement('button');
-        closeBtn.className = 'interaction-option';
-        closeBtn.textContent = '閉じる';
-        closeBtn.addEventListener('click', hideInteractionPopup);
-        options.appendChild(closeBtn);
         
         // ジャーナルに記録
         journal.addEntry({
@@ -193,7 +187,13 @@ const interaction = (function() {
         });
         
         // 効果音再生（あれば）
-        // playSoundEffect('talk');
+        if (typeof audio !== 'undefined' && audio.playSfx) {
+            try {
+                audio.playSfx('talk');
+            } catch (e) {
+                console.log("SFX playback failed:", e);
+            }
+        }
     }
     
     // プレゼント選択画面表示
@@ -290,15 +290,9 @@ const interaction = (function() {
         title.textContent = `${currentObject.name}`;
         content.textContent = reaction;
         
-        // アクションボタンを閉じるボタンに変更
+        // アクションボタン領域を空にする（閉じるは右上のバツで行う）
         const options = popup.querySelector('.interaction-options');
         options.innerHTML = '';
-        
-        const closeBtn = document.createElement('button');
-        closeBtn.className = 'interaction-option';
-        closeBtn.textContent = '閉じる';
-        closeBtn.addEventListener('click', hideInteractionPopup);
-        options.appendChild(closeBtn);
         
         // ジャーナルに記録
         journal.addEntry({
