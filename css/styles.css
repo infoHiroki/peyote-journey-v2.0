@@ -608,11 +608,36 @@ canvas {
     pointer-events: none;
     animation: bounce 0.6s infinite alternate;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    z-index: 20;
 }
 
 @keyframes bounce {
     0% { transform: translateX(-50%) translateY(0); }
     100% { transform: translateX(-50%) translateY(-10px); }
+}
+
+/* アイテム取得通知 */
+.item-pickup-notification {
+    position: fixed;
+    top: 20%;
+    left: 50%;
+    transform: translateX(-50%) translateY(-20px);
+    background: rgba(108, 159, 112, 0.9);
+    color: white;
+    font-weight: bold;
+    padding: 10px 20px;
+    border-radius: 30px;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.25);
+    opacity: 0;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+    text-align: center;
+    pointer-events: none;
+    z-index: 30;
+}
+
+.item-pickup-notification.show {
+    transform: translateX(-50%) translateY(0);
+    opacity: 1;
 }
 
 /* レスポンシブ対応 */

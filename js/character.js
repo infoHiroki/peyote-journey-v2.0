@@ -94,8 +94,24 @@ const character = (function() {
         const interactionRadius = 60;
         const nearbyObject = world.getObjectNear(x, y, interactionRadius);
         
-        // オブジェクトが見つかり、かつ前回と異なるオブジェクトか3秒以上経過していること
-        if (nearbyObject && (nearbyObject.id !== lastInteractedObjectId || now > nextInteractionTime + 3000)) {
+        // オブジェクトが見つからない場合は何もしない
+        if (!nearbyObject) return;
+        
+        // アイテムの場合は自動的に拾う
+        if (nearbyObject.type === 'item' && nearbyObject.canPickup) {
+            // 最後に接触したオブジェクトを更新
+            lastInteractedObjectId = nearbyObject.id;
+            // 次の接触までのクールダウン（1.5秒）
+            nextInteractionTime = now + 1500;
+            
+            // アイテムを自動的に拾う
+            autoPickupItem(nearbyObject);
+            return;
+        }
+        
+        // キャラクターの場合は従来通りインタラクションポップアップを表示
+        // 前回と異なるオブジェクトか3秒以上経過していること
+        if (nearbyObject.id !== lastInteractedObjectId || now > nextInteractionTime + 3000) {
             // 近くにオブジェクトがある場合は移動を止めて対話を開始
             stopMoving();
             
@@ -149,6 +165,80 @@ const character = (function() {
                 }, 2000);
             }
         }
+    }
+    
+    // アイテムを自動的に拾う処理
+    function autoPickupItem(item) {
+        if (!item || !item.canPickup) return;
+        
+        // コレクションに追加
+        if (typeof collection !== 'undefined' && collection.addItem) {
+            collection.addItem({
+                id: item.id,
+                name: item.name,
+                description: item.description,
+                image: item.image
+            });
+            
+            // ジャーナルに記録
+            if (typeof journal !== 'undefined' && journal.addEntry) {
+                journal.addEntry({
+                    type: 'item',
+                    title: `${item.name}を見つけました`,
+                    content: `${item.description}`,
+                    timestamp: Date.now()
+                });
+            }
+            
+            // ワールドからオブジェクトを削除
+            if (typeof world !== 'undefined' && world.removeObject) {
+                world.removeObject(item.id);
+            }
+            
+            // 効果音再生
+            if (typeof audio !== 'undefined' && audio.playSfx) {
+                try {
+                    audio.playSfx('pickup');
+                } catch (e) {
+                    console.log("SFX playback failed:", e);
+                }
+            }
+            
+            // アイテム取得通知の表示
+            showItemNotification(item.name);
+        }
+    }
+    
+    // アイテム取得通知の表示
+    function showItemNotification(itemName) {
+        // すでに通知がある場合は削除
+        const existingNotifications = document.querySelectorAll('.item-pickup-notification');
+        existingNotifications.forEach(notification => {
+            if (notification.parentNode) {
+                notification.parentNode.removeChild(notification);
+            }
+        });
+        
+        // 新しい通知を作成
+        const notification = document.createElement('div');
+        notification.className = 'item-pickup-notification';
+        notification.innerHTML = `${itemName}を手に入れました！`;
+        document.getElementById('game-container').appendChild(notification);
+        
+        // 表示アニメーション
+        setTimeout(() => {
+            notification.classList.add('show');
+        }, 10);
+        
+        // 一定時間後に消去
+        setTimeout(() => {
+            notification.classList.remove('show');
+            setTimeout(() => {
+                if (notification.parentNode) {
+                    notification.parentNode.removeChild(notification);
+                }
+            }, 500);
+        }, 2000);
     }
     
     // 描画処理
