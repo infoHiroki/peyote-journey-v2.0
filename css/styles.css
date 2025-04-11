@@ -72,11 +72,6 @@ canvas {
     right: 20px;
 }
 
-#sound-button {
-    top: 80px;
-    right: 20px;
-}
-
 .menu-icon, .sound-icon {
     width: 24px;
     height: 24px;
@@ -150,6 +145,9 @@ canvas {
     cursor: pointer;
     transition: background-color 0.2s ease, transform 0.2s ease;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .menu-item:hover {
@@ -159,6 +157,19 @@ canvas {
 
 .menu-item:active {
     transform: translateY(0);
+}
+
+.menu-item-icon {
+    margin-right: 10px;
+    font-size: 20px;
+}
+
+.menu-item.muted .menu-item-icon {
+    opacity: 0.5;
+}
+
+.menu-item.muted .menu-item-text {
+    opacity: 0.8;
 }
 
 /* ジャーナル画面 */
@@ -274,6 +285,54 @@ canvas {
     flex: 1;
     padding: 20px;
     overflow-y: auto;
+}
+
+/* マップ画面 */
+.map-content {
+    flex: 1;
+    position: relative;
+    overflow: hidden;
+    background: #f0f7f1;
+}
+
+#mapCanvas {
+    width: 100%;
+    height: 100%;
+}
+
+.map-legend {
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
+    background: rgba(255, 255, 255, 0.8);
+    padding: 10px;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.map-legend-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 5px;
+}
+
+.map-legend-color {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    margin-right: 8px;
+}
+
+.map-player-color {
+    background-color: #e53935;
+}
+
+.map-character-color {
+    background-color: #2196f3;
+}
+
+.map-item-color {
+    background-color: #ffc107;
 }
 
 .setting-group {

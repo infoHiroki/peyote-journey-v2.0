@@ -68,16 +68,7 @@ function initGame() {
     // マウス/タッチイベント処理の追加
     setupTouchControls(canvas);
     
-    // サウンドボタンのイベント処理
-    const soundButton = document.getElementById('sound-button');
-    if (soundButton) {
-        let isMuted = false;
-        soundButton.addEventListener('click', function() {
-            isMuted = !isMuted;
-            audio.setMute(isMuted);
-            soundButton.classList.toggle('muted', isMuted);
-        });
-    }
+    // メニューのサウンドトグルが対応するので削除
     
     // ユーザー操作でBGMをランダム再生
     document.addEventListener('click', function onFirstClick() {
@@ -364,7 +355,7 @@ function loadAssets() {
             const progress = Math.floor((loadedCount / totalAssets) * 100);
             const loadingText = document.querySelector('#loading-screen p');
             if (loadingText) {
-                loadingText.textContent = `旅の準備をしています... ${progress}%`;
+                loadingText.textContent = `アセットをロードしています... ${progress}%`;
             }
         }
         
@@ -386,6 +377,13 @@ function loadAssets() {
                 };
                 img.onerror = () => {
                     console.error(`Failed to load image: ${asset.src}`);
+                    // エラーの場合はデフォルト画像を使用
+                    if (asset.id === 'background') {
+                        const defaultImg = new Image();
+                        defaultImg.src = 'assets/images/world/SongCoverImage1.jpg';
+                        world.assets[asset.id] = defaultImg;
+                    }
+                    
                     loadedCount++;
                     updateLoadingProgress();
                     if (loadedCount === totalAssets) {
@@ -434,11 +432,35 @@ function loadCustomBackground() {
 // ゲーム開始時の処理
 window.onload = async function() {
     try {
-        // 保存済みゲームデータをクリアして新しいワールドを生成
-        storage.clearGameData();
+        const loadingText = document.querySelector('#loading-screen p');
 
+        // アセットロード開始メッセージ
+        if (loadingText) {
+            loadingText.textContent = 'アセットをロードしています... 0%';
+        }
+
+        // アセットのロード
         await loadAssets();
+
+        // カスタム背景のロード
+        if (loadingText) {
+            loadingText.textContent = 'カスタム設定を読み込んでいます...';
+        }
         await loadCustomBackground();
+
+        // ゲーム初期化
+        if (loadingText) {
+            loadingText.textContent = 'ゲームを初期化しています...';
+        }
+
+        // 保存済みゲームデータがあれば読み込む（クリアしない）
+        if (storage.hasGameData()) {
+            console.log('既存のゲームデータを読み込みます');
+        } else {
+            console.log('新しいゲームを開始します');
+        }
+
+        // ゲーム初期化
         initGame();
     } catch (error) {
         console.error("Game initialization failed:", error);

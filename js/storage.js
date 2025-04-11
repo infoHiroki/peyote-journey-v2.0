@@ -47,11 +47,35 @@ const storage = (function() {
         
         try {
             const data = localStorage.getItem(GAME_DATA_KEY);
-            return data ? JSON.parse(data) : null;
+            if (!data) return null;
+            
+            const parsedData = JSON.parse(data);
+            
+            // データの整合性チェック
+            if (!validateGameData(parsedData)) {
+                console.warn('保存データの形式が正しくないため、新しいゲームを開始します。');
+                return null;
+            }
+            
+            return parsedData;
         } catch (e) {
             console.error('Failed to load game data:', e);
             return null;
         }
+    }
+    
+    // ゲームデータの整合性検証
+    function validateGameData(data) {
+        // 必須フィールドの存在確認
+        if (!data || typeof data !== 'object') return false;
+        
+        // タイムスタンプのチェック
+        if (!data.timestamp || typeof data.timestamp !== 'number') return false;
+        
+        // 少なくともjournal、collectionのどちらかが存在するか
+        if (!data.journal && !data.collection) return false;
+        
+        return true;
     }
     
     // ゲームデータの存在確認

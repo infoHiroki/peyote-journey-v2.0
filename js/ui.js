@@ -34,12 +34,59 @@ const ui = (function() {
         // メニュー項目のイベント設定
         const menuItems = menuScreen.querySelectorAll('.menu-item');
         menuItems.forEach(item => {
-            item.addEventListener('click', function() {
-                const screenId = this.getAttribute('data-screen');
-                showScreen(screenId);
-                hideMenu();
-            });
+            // サウンド切り替えボタンの特別処理
+            if (item.id === 'sound-toggle') {
+                item.addEventListener('click', function() {
+                    toggleSound(this);
+                });
+                
+                // 初期状態の設定
+                updateSoundToggleState(item, false);
+            } else {
+                // 他のメニュー項目は通常処理
+                item.addEventListener('click', function() {
+                    const screenId = this.getAttribute('data-screen');
+                    if (screenId) {
+                        if (screenId === 'map') {
+                            // マップ画面の特別処理
+                            world.showFullMap();
+                        } else {
+                            // 通常画面表示
+                            showScreen(screenId);
+                        }
+                        hideMenu();
+                    }
+                });
+            }
         });
+    }
+    
+    // サウンド切り替え
+    function toggleSound(element) {
+        // 現在の状態を反転
+        let isMuted = element.classList.contains('muted');
+        isMuted = !isMuted;
+        
+        // 見た目の更新
+        updateSoundToggleState(element, isMuted);
+        
+        // 実際のサウンド変更
+        if (typeof audio !== 'undefined' && audio.setMute) {
+            audio.setMute(isMuted);
+        }
+    }
+    
+    // サウンドトグルの表示状態更新
+    function updateSoundToggleState(element, isMuted) {
+        if (isMuted) {
+            element.classList.add('muted');
+            element.querySelector('.menu-item-icon').textContent = '🔇';
+            element.querySelector('.menu-item-text').textContent = 'BGM: オフ';
+        } else {
+            element.classList.remove('muted');
+            element.querySelector('.menu-item-icon').textContent = '🔊';
+            element.querySelector('.menu-item-text').textContent = 'BGM: オン';
+        }
     }
     
     // 設定画面の初期化
@@ -197,6 +244,13 @@ const ui = (function() {
                     break;
                 case 'collection':
                     collection.showCollection();
+                    break;
+                case 'map':
+                    // マップ画面が表示されたら描画更新
+                    const mapCanvas = document.getElementById('mapCanvas');
+                    if (mapCanvas && typeof world.showFullMap === 'function') {
+                        world.showFullMap();
+                    }
                     break;
                 // 他の画面に対する処理
             }

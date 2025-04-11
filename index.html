@@ -22,14 +22,6 @@
                     <line x1="3" y1="18" x2="21" y2="18" stroke="currentColor" stroke-width="2" />
                 </svg>
             </div>
-            
-            <div id="sound-button" class="ui-button">
-                <svg viewBox="0 0 24 24" class="sound-icon">
-                    <path d="M3,9H7L12,4V20L7,15H3V9Z" fill="currentColor" />
-                    <path class="sound-wave" d="M16,7C18.76,7 21,9.24 21,12C21,14.76 18.76,17 16,17V15C17.66,15 19,13.66 19,12C19,10.34 17.66,9 16,9V7Z" fill="currentColor" />
-                    <path class="sound-wave" d="M16,3C21.52,3 26,7.48 26,12C26,16.52 21.52,21 16,21V19C20.42,19 24,15.42 24,12C24,8.58 20.42,5 16,5V3Z" fill="currentColor" />
-                </svg>
-            </div>
         </div>
         
         <!-- メニュー画面 -->
@@ -41,6 +33,11 @@
             <div class="menu-items">
                 <div class="menu-item" data-screen="journal">ジャーナル</div>
                 <div class="menu-item" data-screen="collection">コレクション</div>
+                <div class="menu-item" data-screen="map">ワールドマップ</div>
+                <div class="menu-item" id="sound-toggle">
+                    <span class="menu-item-icon">🔊</span>
+                    <span class="menu-item-text">BGM: オン</span>
+                </div>
                 <div class="menu-item" data-screen="settings">設定</div>
             </div>
         </div>
@@ -84,6 +81,31 @@
                 </div>
                 <div class="setting-group">
                     <button id="reset-button" class="action-button">ゲームデータをリセット</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- マップ画面 -->
+        <div id="map-screen" class="screen hidden">
+            <div class="screen-header">
+                <h2>ワールドマップ</h2>
+                <div class="close-button">×</div>
+            </div>
+            <div class="map-content">
+                <canvas id="mapCanvas"></canvas>
+                <div class="map-legend">
+                    <div class="map-legend-item">
+                        <div class="map-legend-color map-player-color"></div>
+                        <span>プレイヤー</span>
+                    </div>
+                    <div class="map-legend-item">
+                        <div class="map-legend-color map-character-color"></div>
+                        <span>キャラクター</span>
+                    </div>
+                    <div class="map-legend-item">
+                        <div class="map-legend-color map-item-color"></div>
+                        <span>アイテム</span>
+                    </div>
                 </div>
             </div>
         </div>
