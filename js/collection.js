@@ -29,21 +29,76 @@ const collection = (function() {
         // アイテムが有効かチェック
         if (!item || !item.id || !item.name) return false;
         
-        // 既に存在するか確認
-        const existingItem = items.find(i => i.id === item.id);
+        // アイテムタイプの決定（優先順位：itemType > image > 名前）
+        let itemType = item.itemType || '';
+        
+        // itemTypeがない場合は画像から推測
+        if (!itemType && item.image) {
+            const imageParts = item.image.split('_');
+            if (imageParts.length >= 2) {
+                itemType = imageParts[1]; // 例：item_flower -> flower
+            }
+        }
+        
+        // 画像からも判断できない場合は名前を使う
+        if (!itemType && item.name) {
+            if (item.name.includes('花') || item.name.includes('ひまわり')) {
+                itemType = 'flower';
+            } else if (item.name.includes('石')) {
+                itemType = 'stone';
+            } else if (item.name.includes('結晶')) {
+                itemType = 'crystal';
+            }
+        }
+        
+        // 同じタイプのアイテムを探す
+        let existingItem = null;
+        
+        if (itemType) {
+            // まず、itemTypeが一致するものを探す（最も正確）
+            existingItem = items.find(i => i.itemType === itemType);
+            
+            // itemTypeが一致しない場合は画像名を確認
+            if (!existingItem) {
+                existingItem = items.find(i => {
+                    // 画像IDに同じタイプが含まれるか
+                    return i.image && i.image.includes(itemType);
+                });
+            }
+            
+            // それでも見つからない場合は名前の類似性で判断
+            if (!existingItem) {
+                existingItem = items.find(i => {
+                    // 名前が似ているか
+                    return i.name === item.name || 
+                        (i.name.includes(item.name) || item.name.includes(i.name));
+                });
+            }
+        }
+        
+        if (!existingItem) {
+            // 上記の方法で見つからなければ従来の完全一致IDで検索
+            existingItem = items.find(i => i.id === item.id);
+        }
+        
         if (existingItem) {
-            // 既に持っている場合は数量を増やす（もし数量管理するなら）
+            // 既に持っている場合は数量を増やす
             if (existingItem.quantity) {
                 existingItem.quantity++;
             } else {
                 existingItem.quantity = 2;
             }
+            console.log(`${existingItem.name}の数を増やしました。現在の数量: ${existingItem.quantity}`);
         } else {
             // 新しいアイテムを追加
-            items.push({
+            const newItem = {
                 ...item,
-                acquired: Date.now()
-            });
+                acquired: Date.now(),
+                itemType: itemType || 'unknown' // アイテムタイプも保存
+            };
+            
+            items.push(newItem);
+            console.log(`新しいアイテム『${item.name}』を追加しました`);
         }
         
         // コレクション表示を更新

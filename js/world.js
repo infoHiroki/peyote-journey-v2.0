@@ -76,6 +76,7 @@ const world = (function() {
                         y: worldHeight * 0.3,
                         type: "item",
                         image: "item_flower",
+                        itemType: "flower",  // アイテムタイプを明示
                         name: "ひまわり",
                         description: "明るく輝く黄色い花",
                         radius: 25,
@@ -87,6 +88,7 @@ const world = (function() {
                         y: worldHeight * 0.7,
                         type: "item",
                         image: "item_stone",
+                        itemType: "stone",  // アイテムタイプを明示
                         name: "不思議な石",
                         description: "模様が美しい丸い石",
                         radius: 20,
@@ -111,6 +113,7 @@ const world = (function() {
                         y: worldHeight * 0.8,
                         type: "item",
                         image: "item_crystal",
+                        itemType: "crystal",  // アイテムタイプを明示
                         name: "輝く結晶",
                         description: "神秘的な力を秘めた紫色の結晶",
                         radius: 25,
@@ -169,6 +172,7 @@ const world = (function() {
                             y,
                             type: 'item',
                             image: `item_${randomItemImage}`,
+                            itemType: randomItemImage,  // アイテムタイプを明示
                             name: itemName,
                             description: itemDesc,
                             radius: 25,
