@@ -149,7 +149,10 @@ function setupTouchControls(canvas) {
         // UIイベント伝播防止
         if (preventEventPropagation(event)) return;
         
-        event.preventDefault();
+        // スクロール中の場合はpreventDefaultを避ける
+        if (event.cancelable) {
+            event.preventDefault();
+        }
         
         const touch = event.touches[0];
         const rect = canvas.getBoundingClientRect();
@@ -160,25 +163,19 @@ function setupTouchControls(canvas) {
         lastTouchX = touchX;
         lastTouchY = touchY;
         
-        // オブジェクトクリックチェック
-        const worldPos = world.screenToWorldCoordinates(touchX, touchY);
-        const clickedObject = world.getObjectAt(worldPos.x, worldPos.y);
-        
-        if (clickedObject) {
-            // オブジェクトがクリックされた場合
-            audio.playSfx('discover');
-            interaction.showInteractionPopup(clickedObject);
-        } else {
-            // 通常の移動開始
-            isPressing = true;
-            moveCharacterToPosition(touchX, touchY);
-        }
+        // 直接移動開始（クリックでの対話を廃止）
+        isPressing = true;
+        moveCharacterToPosition(touchX, touchY);
     }
     
     // タッチ移動
     function handleTouchMove(event) {
         if (!isPressing) return;
-        event.preventDefault();
+        
+        // スクロール中の場合はpreventDefaultを避ける
+        if (event.cancelable) {
+            event.preventDefault();
+        }
         
         const touch = event.touches[0];
         const rect = canvas.getBoundingClientRect();
@@ -211,19 +208,9 @@ function setupTouchControls(canvas) {
         lastTouchX = clickX;
         lastTouchY = clickY;
         
-        // オブジェクトクリックチェック
-        const worldPos = world.screenToWorldCoordinates(clickX, clickY);
-        const clickedObject = world.getObjectAt(worldPos.x, worldPos.y);
-        
-        if (clickedObject) {
-            // オブジェクトがクリックされた場合
-            audio.playSfx('discover');
-            interaction.showInteractionPopup(clickedObject);
-        } else {
-            // 通常の移動開始
-            isPressing = true;
-            moveCharacterToPosition(clickX, clickY);
-        }
+        // 直接移動開始（クリックでの対話を廃止）
+        isPressing = true;
+        moveCharacterToPosition(clickX, clickY);
     }
     
     // マウス移動

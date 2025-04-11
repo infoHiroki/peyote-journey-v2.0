@@ -160,10 +160,27 @@ const character = (function() {
     
     // 目標地点到着時の処理
     function onArrival() {
-        // 到着地点のオブジェクト検出
-        const nearbyObject = world.getObjectAt(x, y);
+        // 到着地点のオブジェクト検出（検出範囲を広げる）
+        const interactionRadius = 50; // より広い接触検出範囲
+        const nearbyObject = world.getObjectNear(x, y, interactionRadius);
+        
         if (nearbyObject) {
-            // 近くにオブジェクトがあれば通知
+            // オブジェクトとの接触時に自動的にインタラクションポップアップを表示
+            if (typeof interaction !== 'undefined' && interaction.showInteractionPopup) {
+                // インタラクションを表示
+                interaction.showInteractionPopup(nearbyObject);
+                
+                // 効果音を再生（存在する場合）
+                if (typeof audio !== 'undefined' && audio.playSfx) {
+                    try {
+                        audio.playSfx('discover');
+                    } catch (e) {
+                        console.log("SFX playback failed:", e);
+                    }
+                }
+            }
+            
+            // 通知マーカーも表示
             const interactionMarker = document.createElement('div');
             interactionMarker.className = 'interaction-marker';
             interactionMarker.innerHTML = '!';
@@ -174,7 +191,7 @@ const character = (function() {
             interactionMarker.style.left = `${screenPos.x}px`;
             interactionMarker.style.top = `${screenPos.y - 40}px`; // 少し上に表示
             
-            // 一定時間後に消去
+            // 一定時間後に消去 (マーカーのみ消去、ポップアップは残す)
             setTimeout(() => {
                 if (interactionMarker.parentNode) {
                     interactionMarker.parentNode.removeChild(interactionMarker);

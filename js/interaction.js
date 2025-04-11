@@ -22,11 +22,25 @@ const interaction = (function() {
             });
         });
         
-        // ポップアップ外クリックで閉じる
+        // 閉じるボタンの追加
+        if (!popup.querySelector('.interaction-close-btn')) {
+            const closeBtn = document.createElement('button');
+            closeBtn.className = 'interaction-close-btn';
+            closeBtn.innerHTML = '×';
+            closeBtn.addEventListener('click', hideInteractionPopup);
+            popup.appendChild(closeBtn);
+        }
+        
+        // ポップアップ自体のイベント伝播を止める
+        popup.addEventListener('click', function(event) {
+            event.stopPropagation();
+        });
+        
+        // ポップアップ外クリックで閉じる（任意の位置をクリックで閉じる）
         document.addEventListener('click', function(event) {
             if (!popup.classList.contains('hidden')) {
-                // イベントの発生元が対話ポップアップ内ではない場合
-                if (!popup.contains(event.target) && event.target.id !== 'interaction-popup') {
+                // ポップアップ外のクリックの場合
+                if (!popup.contains(event.target)) {
                     hideInteractionPopup();
                 }
             }

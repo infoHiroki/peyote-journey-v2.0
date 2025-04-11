@@ -332,6 +332,32 @@ canvas {
     z-index: 30;
     transition: transform 0.3s ease, opacity 0.3s ease;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    pointer-events: auto; /* ポップアップをクリック可能に */
+}
+
+/* インタラクションポップアップの閉じるボタン */
+.interaction-close-btn {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    width: 25px;
+    height: 25px;
+    background: #6c9f70;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    font-size: 16px;
+    line-height: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: background 0.2s ease;
+    z-index: 31;
+}
+
+.interaction-close-btn:hover {
+    background: #5d8a61;
 }
 
 #interaction-popup.hidden {

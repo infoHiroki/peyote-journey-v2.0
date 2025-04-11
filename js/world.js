@@ -409,6 +409,28 @@ const world = (function() {
         }
     }
     
+    // 指定位置の近くにあるオブジェクトを検索（広い範囲で）
+    function getObjectNear(x, y, radius = 50) {
+        let closestObject = null;
+        let closestDistance = radius;
+        
+        // すべてのオブジェクトをチェックして最も近いものを見つける
+        for (let i = 0; i < worldObjects.length; i++) {
+            const object = worldObjects[i];
+            const dx = object.x - x;
+            const dy = object.y - y;
+            const distance = Math.sqrt(dx * dx + dy * dy);
+            
+            // 指定範囲内で最も近いオブジェクトを記録
+            if (distance <= closestDistance) {
+                closestObject = object;
+                closestDistance = distance;
+            }
+        }
+        
+        return closestObject;
+    }
+    
     // モジュールの公開API
     return {
         init,
@@ -417,6 +439,7 @@ const world = (function() {
         screenToWorldCoordinates,
         worldToScreenCoordinates,
         getObjectAt,
+        getObjectNear,
         removeObject,
         addObject,
         updateViewport,
