@@ -439,6 +439,12 @@ window.onload = async function() {
             loadingText.textContent = 'アセットをロードしています... 0%';
         }
 
+        // 世界とキャラクターモジュールが初期化されていることを確認
+        if (typeof world === 'undefined') {
+            console.error("World module not loaded!");
+            throw new Error("World module not available");
+        }
+
         // アセットのロード
         await loadAssets();
 

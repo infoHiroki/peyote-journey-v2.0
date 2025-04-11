@@ -112,12 +112,14 @@ const world = (function() {
                     }
                 ];
                 
-                // キャラクターの初期位置も調整
-                const characterPos = character.getPosition();
-                if (characterPos.x === 2500 && characterPos.y === 1500) {
-                    // デフォルト位置のままなら中央に配置
-                    character.moveTo(worldWidth * 0.5, worldHeight * 0.6);
-                    character.stopMoving();
+                // キャラクターの初期位置も調整（キャラクターが利用可能な場合）
+                if (typeof character !== 'undefined' && character.getPosition) {
+                    const characterPos = character.getPosition();
+                    if (characterPos.x === 2500 && characterPos.y === 1500) {
+                        // デフォルト位置のままなら中央に配置
+                        character.moveTo(worldWidth * 0.5, worldHeight * 0.6);
+                        character.stopMoving();
+                    }
                 }
 
                 // 追加のキャラ・アイテムをランダム配置して出現頻度アップ
@@ -171,12 +173,14 @@ const world = (function() {
             worldHeight = origBgHeight * bgScaleFactor;
         }
         
-        // キャラクターの位置に基づいてカメラを更新
-        const characterPos = character.getPosition();
-        
-        // カメラの更新（キャラクターを中心に）
-        cameraX = characterPos.x - viewportWidth / 2;
-        cameraY = characterPos.y - viewportHeight / 2;
+        // キャラクターの位置に基づいてカメラを更新（キャラクターが利用可能な場合）
+        if (typeof character !== 'undefined' && character.getPosition) {
+            const characterPos = character.getPosition();
+            
+            // カメラの更新（キャラクターを中心に）
+            cameraX = characterPos.x - viewportWidth / 2;
+            cameraY = characterPos.y - viewportHeight / 2;
+        }
         
         // カメラが世界の外に出ないように制限
         cameraX = Math.max(0, Math.min(cameraX, worldWidth - viewportWidth));
@@ -464,14 +468,20 @@ const world = (function() {
         ctx.strokeRect(vpX, vpY, vpW, vpH);
         
         // プレイヤーの位置
-        const playerPos = character.getPosition();
-        const playerX = x + playerPos.x * scaleX;
-        const playerY = y + playerPos.y * scaleY;
+        // キャラクターが定義されているか確認
+if (typeof character !== 'undefined' && character.getPosition) {
+            const playerPos = character.getPosition();
+            const playerX = x + playerPos.x * scaleX;
+            const playerY = y + playerPos.y * scaleY;
         
         ctx.fillStyle = 'rgba(255, 0, 0, 0.8)';
         ctx.beginPath();
         ctx.arc(playerX, playerY, 4, 0, Math.PI * 2);
         ctx.fill();
+        } else {
+            // キャラクターが利用できない場合はスキップ
+            console.log('Character not available for minimap');
+        }
         
         // オブジェクトも表示
         worldObjects.forEach(obj => {
@@ -573,7 +583,8 @@ const world = (function() {
                 }
             });
             
-            // プレイヤー位置
+            // プレイヤー位置（キャラクターが利用可能な場合）
+        if (typeof character !== 'undefined' && character.getPosition) {
             const playerPos = character.getPosition();
             const playerX = offsetX + playerPos.x * scale;
             const playerY = offsetY + playerPos.y * scale;
@@ -582,6 +593,10 @@ const world = (function() {
             mapCtx.beginPath();
             mapCtx.arc(playerX, playerY, 7, 0, Math.PI * 2);
             mapCtx.fill();
+        } else {
+            // キャラクターが利用できない場合はスキップ
+            console.log('Character not available for map');
+        }
             
             // 現在のビューポートを表示
             const vpX = offsetX + cameraX * scale;
@@ -620,7 +635,6 @@ const world = (function() {
             mapCtx.fillStyle = 'black';
             mapCtx.fillText('アイテム', 230, legendY + 4);
         }
-    }
 
     // モジュールの公開API
     return {
