@@ -587,6 +587,14 @@ canvas {
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
 }
 
+.dialog-content p {
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 16px;
+    line-height: 1.5;
+    color: #333;
+}
+
 .dialog-buttons {
     display: flex;
     justify-content: space-around;
@@ -594,10 +602,20 @@ canvas {
 }
 
 .dialog-button {
-    padding: 8px 20px;
+    padding: 10px 25px;
     border: none;
     border-radius: 5px;
     cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+.dialog-button:hover {
+    transform: translateY(-2px);
+}
+
+.dialog-button:active {
+    transform: translateY(0);
 }
 
 .confirm-button {
@@ -605,9 +623,17 @@ canvas {
     color: white;
 }
 
+.confirm-button:hover {
+    background: #c0392b;
+}
+
 .cancel-button {
     background: #7f8c8d;
     color: white;
+}
+
+.cancel-button:hover {
+    background: #636e72;
 }
 
 /* ロード画面 */

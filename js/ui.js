@@ -132,7 +132,10 @@ const ui = (function() {
             bgmVolumeSlider.addEventListener('change', function() {
                 settings.bgmVolume = parseInt(this.value, 10);
                 storage.saveSettings(settings);
-                // BGM音量の反映（実装時に追加）
+                // BGM音量の反映
+                if (typeof audio !== 'undefined' && audio.setBgmVolume) {
+                    audio.setBgmVolume(settings.bgmVolume / 100);
+                }
             });
         }
         
@@ -143,7 +146,10 @@ const ui = (function() {
             sfxVolumeSlider.addEventListener('change', function() {
                 settings.sfxVolume = parseInt(this.value, 10);
                 storage.saveSettings(settings);
-                // 効果音音量の反映（実装時に追加）
+                // 効果音音量の反映
+                if (typeof audio !== 'undefined' && audio.setSfxVolume) {
+                    audio.setSfxVolume(settings.sfxVolume / 100);
+                }
             });
         }
         
@@ -152,6 +158,56 @@ const ui = (function() {
         if (backgroundUpload) {
             backgroundUpload.addEventListener('change', handleBackgroundUpload);
         }
+        
+        // リセットボタンの設定
+        const resetButton = document.getElementById('reset-button');
+        if (resetButton) {
+            resetButton.addEventListener('click', function() {
+                showConfirm('ゲームデータをリセットします。すべてのコレクションとジャーナルの記録が消去されます。よろしいですか？', function() {
+                    // リセット実行
+                    resetGameData();
+                    // 通知表示
+                    showNotification('ゲームデータをリセットしました', 3000);
+                });
+            });
+        }
+    }
+    
+    // ゲームデータのリセット
+    function resetGameData() {
+        // 保存データの削除
+        storage.clearGameData();
+        storage.clearCustomBackground();
+        
+        // 各モジュールのリセット
+        if (typeof collection !== 'undefined' && collection.clearAllItems) {
+            collection.clearAllItems();
+        }
+        
+        if (typeof journal !== 'undefined' && journal.clearAllEntries) {
+            journal.clearAllEntries();
+        }
+        
+        // ワールドの再生成（必要に応じて）
+        if (typeof world !== 'undefined' && world.init) {
+            // 現在のキャンバスサイズで再初期化
+            const canvas = document.getElementById('gameCanvas');
+            if (canvas) {
+                world.init(canvas.width, canvas.height);
+            }
+        }
+        
+        // キャラクターの初期位置を再設定
+        if (typeof character !== 'undefined' && character.init) {
+            character.init();
+        }
+        
+        console.log('ゲームデータがリセットされました');
+        
+        // 通知を表示した後、3秒後にページを再読み込み
+        setTimeout(() => {
+            location.reload();
+        }, 3000);
     }
     
     // 背景画像アップロードの処理
