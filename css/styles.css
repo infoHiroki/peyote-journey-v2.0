@@ -725,6 +725,30 @@ canvas {
     opacity: 1;
 }
 
+/* プレゼント渡し通知 */
+.item-gift-notification {
+    position: fixed;
+    top: 20%;
+    left: 50%;
+    transform: translateX(-50%) translateY(-20px);
+    background: rgba(70, 100, 190, 0.9); /* 青系の色に変更 */
+    color: white;
+    padding: 12px 25px;
+    border-radius: 15px;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.3);
+    opacity: 0;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+    text-align: center;
+    pointer-events: none;
+    z-index: 30;
+    max-width: 80%;
+}
+
+.item-gift-notification.show {
+    transform: translateX(-50%) translateY(0);
+    opacity: 1;
+}
+
 .notification-title {
     font-weight: bold;
     font-size: 16px;

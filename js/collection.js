@@ -333,11 +333,29 @@ const collection = (function() {
         }
     }
     
+    // アイテム数量を減らす
+    function decreaseItemQuantity(itemId) {
+        const item = items.find(i => i.id === itemId);
+        if (!item) return false;
+        
+        // 数量がある場合は減らす
+        if (item.quantity && item.quantity > 1) {
+            item.quantity--;
+            console.log(`${item.name}の数量が減りました。残り: ${item.quantity}`);
+            updateCollectionDisplay();
+            return true;
+        } else {
+            // 数量が1以下の場合は削除
+            return removeItem(itemId);
+        }
+    }
+    
     // モジュールの公開API
     return {
         init,
         addItem,
         removeItem,
+        decreaseItemQuantity,
         showCollection,
         hideCollection,
         hasItem,

@@ -248,14 +248,38 @@ const interaction = (function() {
         if (currentObject.giftReactions && currentObject.giftReactions[itemId]) {
             reaction = currentObject.giftReactions[itemId];
         } else {
-            // ランダムな汎用反応
-            const genericReactions = [
-                "ありがとう、大切にするね。",
-                "こんなものをくれるなんて、嬉しいな。",
-                "これは...面白いものをありがとう。",
-                "ふむ、興味深いものだね。"
-            ];
-            reaction = genericReactions[Math.floor(Math.random() * genericReactions.length)];
+            // アイテムタイプに基づく反応
+            if (item.itemType === 'flower' || (item.image && item.image.includes('flower'))) {
+                const flowerReactions = [
+                    "わぁ、とても綺麗な花！ありがとう、大切にするね。",
+                    "花をくれるなんて、素敵な気遣いだね。",
+                    "こんなに可愛らしい花を見つけたの？ありがとう！"
+                ];
+                reaction = flowerReactions[Math.floor(Math.random() * flowerReactions.length)];
+            } else if (item.itemType === 'stone' || (item.image && item.image.includes('stone'))) {
+                const stoneReactions = [
+                    "面白い形の石だね。コレクションに加えるよ。",
+                    "こんな特別な石を見つけたの？ありがとう。",
+                    "石集めが趣味なんだ。これは貴重なものだね。"
+                ];
+                reaction = stoneReactions[Math.floor(Math.random() * stoneReactions.length)];
+            } else if (item.itemType === 'crystal' || (item.image && item.image.includes('crystal'))) {
+                const crystalReactions = [
+                    "きらきら輝いていて美しい...こんな素晴らしい結晶をありがとう。",
+                    "神秘的な力を感じる結晶だね。貴重なプレゼントに感謝するよ。",
+                    "こんな美しい結晶は初めて見た。特別な場所に飾るね。"
+                ];
+                reaction = crystalReactions[Math.floor(Math.random() * crystalReactions.length)];
+            } else {
+                // その他のアイテムに対する汎用反応
+                const genericReactions = [
+                    "ありがとう、大切にするね。",
+                    "こんなものをくれるなんて、嬉しいな。",
+                    "これは...面白いものをありがとう。",
+                    "ふむ、興味深いものだね。"
+                ];
+                reaction = genericReactions[Math.floor(Math.random() * genericReactions.length)];
+            }
         }
         
         // 対話ポップアップの内容を反応に変更
@@ -284,8 +308,27 @@ const interaction = (function() {
             timestamp: Date.now()
         });
         
+        // コレクションからアイテムを削除
+        // 数量が2以上の場合は減らし、1つの場合は削除
+        if (item.quantity && item.quantity > 1) {
+            // アイテムの数を減らす
+            collection.decreaseItemQuantity(itemId);
+        } else {
+            // アイテムを完全に削除
+            collection.removeItem(itemId);
+        }
+        
+        // プレゼント通知表示
+        showGiftNotification(item.name, currentObject.name);
+        
         // 効果音再生（あれば）
-        // playSoundEffect('gift');
+        if (typeof audio !== 'undefined' && audio.playSfx) {
+            try {
+                audio.playSfx('gift');
+            } catch (e) {
+                console.log("SFX playback failed:", e);
+            }
+        }
         
         // 将来的な手紙のきっかけとして記録
         // 一定確率または条件で後に手紙が届く仕組み
@@ -305,6 +348,44 @@ const interaction = (function() {
         
         // 単に閉じる（すでに説明は表示されている）
         hideInteractionPopup();
+    }
+    
+    // プレゼント通知の表示
+    function showGiftNotification(itemName, characterName) {
+        // すでに通知がある場合は削除
+        const existingNotifications = document.querySelectorAll('.item-gift-notification');
+        existingNotifications.forEach(notification => {
+            if (notification.parentNode) {
+                notification.parentNode.removeChild(notification);
+            }
+        });
+        
+        // 新しい通知を作成
+        const notification = document.createElement('div');
+        notification.className = 'item-gift-notification';
+        
+        // 通知内容の設定
+        notification.innerHTML = `
+            <div class="notification-title">${itemName}を${characterName}に渡しました</div>
+            <div class="notification-description">コレクションから${itemName}がなくなりました</div>
+        `;
+        
+        document.getElementById('game-container').appendChild(notification);
+        
+        // 表示アニメーション
+        setTimeout(() => {
+            notification.classList.add('show');
+        }, 10);
+        
+        // 一定時間後に消去
+        setTimeout(() => {
+            notification.classList.remove('show');
+            setTimeout(() => {
+                if (notification.parentNode) {
+                    notification.parentNode.removeChild(notification);
+                }
+            }, 500);
+        }, 3000);
     }
     
     // モジュールの公開API
