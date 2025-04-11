@@ -204,13 +204,14 @@ const character = (function() {
                 }
             }
             
-            // アイテム取得通知の表示
-            showItemNotification(item.name);
+            // アイテム取得通知の表示（説明文も渡す）
+            showItemNotification(item.name, item.description);
         }
     }
     
     // アイテム取得通知の表示
-    function showItemNotification(itemName) {
+    function showItemNotification(itemName, itemDescription = "") {
+        
         // すでに通知がある場合は削除
         const existingNotifications = document.querySelectorAll('.item-pickup-notification');
         existingNotifications.forEach(notification => {
@@ -219,10 +220,16 @@ const character = (function() {
             }
         });
         
-        // 新しい通知を作成
+        // 新しい通知を作成（二段構成）
         const notification = document.createElement('div');
         notification.className = 'item-pickup-notification';
-        notification.innerHTML = `${itemName}を手に入れました！`;
+        
+        // アイテム名と説明を二段で表示
+        notification.innerHTML = `
+            <div class="notification-title">${itemName}を手に入れました！</div>
+            ${itemDescription ? `<div class="notification-description">${itemDescription}</div>` : ''}
+        `;
+        
         document.getElementById('game-container').appendChild(notification);
         
         // 表示アニメーション
@@ -230,7 +237,8 @@ const character = (function() {
             notification.classList.add('show');
         }, 10);
         
-        // 一定時間後に消去
+        // 一定時間後に消去（説明文がある場合は少し長めに表示）
+        const displayTime = itemDescription ? 3000 : 2000;
         setTimeout(() => {
             notification.classList.remove('show');
             setTimeout(() => {
@@ -238,7 +246,7 @@ const character = (function() {
                     notification.parentNode.removeChild(notification);
                 }
             }, 500);
-        }, 2000);
+        }, displayTime);
     }
     
     // 描画処理
