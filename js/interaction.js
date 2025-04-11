@@ -332,16 +332,37 @@ const interaction = (function() {
     function examineObject() {
         if (!currentObject) return;
         
+        // 対話ポップアップの内容を詳細な調査情報に変更
+        const popup = document.getElementById('interaction-popup');
+        const title = popup.querySelector('.interaction-title');
+        const content = popup.querySelector('.interaction-content');
+        
+        // タイトルを変更して調査中であることを示す
+        title.textContent = `【調査】${currentObject.name}`;
+        
+        // 詳細な調査情報があればそれを表示、なければ基本説明を表示
+        content.textContent = currentObject.examineInfo || currentObject.description;
+        
+        // アクションボタン領域を空にする（閉じるは右上のバツで行う）
+        const options = popup.querySelector('.interaction-options');
+        options.innerHTML = '';
+        
         // ジャーナルに記録
         journal.addEntry({
             type: 'examine',
             title: `${currentObject.name}を調べました`,
-            content: currentObject.description,
+            content: currentObject.examineInfo || currentObject.description,
             timestamp: Date.now()
         });
         
-        // 単に閉じる（すでに説明は表示されている）
-        hideInteractionPopup();
+        // 効果音再生（あれば）
+        if (typeof audio !== 'undefined' && audio.playSfx) {
+            try {
+                audio.playSfx('examine');
+            } catch (e) {
+                console.log("SFX playback failed:", e);
+            }
+        }
     }
     
     // プレゼント通知の表示

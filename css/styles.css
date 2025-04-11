@@ -187,6 +187,46 @@ canvas {
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
+/* 調査エントリーのスタイル */
+.journal-entry.examine {
+    background-color: #f0f7ff; /* 薄い青色の背景 */
+    border-left: 4px solid #2196f3; /* 青色のアクセント */
+}
+
+.journal-entry.examine .entry-title {
+    color: #0d47a1; /* 濃い青色のタイトル */
+}
+
+/* 会話エントリーのスタイル */
+.journal-entry.conversation {
+    background-color: #f5f0ff; /* 薄い紫色の背景 */
+    border-left: 4px solid #9c27b0; /* 紫色のアクセント */
+}
+
+.journal-entry.conversation .entry-title {
+    color: #6a1b9a; /* 濃い紫色のタイトル */
+}
+
+/* アイテム発見エントリーのスタイル */
+.journal-entry.item {
+    background-color: #f0fff5; /* 薄い緑色の背景 */
+    border-left: 4px solid #4caf50; /* 緑色のアクセント */
+}
+
+.journal-entry.item .entry-title {
+    color: #1b5e20; /* 濃い緑色のタイトル */
+}
+
+/* プレゼントエントリーのスタイル */
+.journal-entry.gift {
+    background-color: #fff8e1; /* 薄い黄色の背景 */
+    border-left: 4px solid #ffc107; /* 黄色のアクセント */
+}
+
+.journal-entry.gift .entry-title {
+    color: #ff6f00; /* オレンジ色のタイトル */
+}
+
 .entry-header {
     display: flex;
     align-items: center;

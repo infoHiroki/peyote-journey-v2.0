@@ -103,6 +103,7 @@ const world = (function() {
                         name: "森のうさぎ",
                         description: "白いうさぎがこちらを見ています",
                         dialogue: "こんにちは、旅人さん。広い世界を旅しているんですね。",
+                        examineInfo: "このうさぎは森の番人のようだ。周囲を常に観察し、異変があればすぐに気づく鋭い感覚の持ち主。長い耳は遠くの音も聞き取れるという。花や野菜が好物で、特に紫の花を見つけると喜ぶらしい。このあたりで一番古くから住んでいて、森の歴史についても詳しいかもしれない。",
                         radius: 30,
                         canTalk: true,
                         acceptsGifts: true
@@ -128,6 +129,7 @@ const world = (function() {
                         name: "キツネ",
                         description: "オレンジ色の毛並みが美しいキツネ",
                         dialogue: "こんにちは、旅人。何か面白いものを見つけた？",
+                        examineInfo: "このキツネは旅人たちからの贈り物を集めることを趣味にしているようだ。賢そうな目をしており、時折人間の言葉を理解しているような仕草を見せる。不思議な石に特に興味を示すらしく、それらを巣の近くに集めているという噂がある。どこか遠い地域からここに辿り着いたと言われている。",
                         radius: 30,
                         canTalk: true,
                         acceptsGifts: true
@@ -188,10 +190,12 @@ const world = (function() {
                             charName = '森のうさぎ';
                             charDesc = '白いうさぎがこちらを見ています';
                             charDialogue = 'こんにちは、旅人さん。';
+                            charExamineInfo = '長い耳と赤い目を持つ白いうさぎ。森の奥で暮らしているようです。物静かですが、よく辺りを観察しています。時々、森で見つけた珍しいものについて教えてくれることも。';
                         } else if (randomCharImage === 'pixel_fox') {
                             charName = '野生のキツネ';
                             charDesc = '好奇心旺盛なキツネ';
                             charDialogue = '何か面白いものを見つけた？';
+                            charExamineInfo = 'オレンジ色の毛並みが美しいキツネ。ずる賢い目をしていますが、友好的な様子。この地域では珍しい動物で、特定の花や石を集めているという噂があります。';
                         }
                         
                         worldObjects.push({
@@ -203,6 +207,7 @@ const world = (function() {
                             name: charName,
                             description: charDesc,
                             dialogue: charDialogue,
+                            examineInfo: charExamineInfo, // 詳細な調査情報を追加
                             radius: 30,
                             canTalk: true,
                             acceptsGifts: true

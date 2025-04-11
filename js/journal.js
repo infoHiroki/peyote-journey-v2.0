@@ -86,7 +86,7 @@ const journal = (function() {
                     typeIcon = '🎁';
                     break;
                 case 'examine':
-                    typeIcon = '👁️';
+                    typeIcon = '🔍';
                     break;
                 case 'system':
                     typeIcon = '📝';
