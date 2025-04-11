@@ -18,6 +18,23 @@ const ui = (function() {
         
         // 設定画面の初期化
         initSettingsScreen();
+        
+        // マップ画面の初期化
+        initMapScreen();
+    }
+    
+    // マップ画面の初期化
+    function initMapScreen() {
+        const mapScreen = document.getElementById('map-screen');
+        if (!mapScreen) return;
+        
+        // 閉じるボタンの設定
+        const closeButton = mapScreen.querySelector('.close-button');
+        if (closeButton) {
+            closeButton.addEventListener('click', function() {
+                mapScreen.classList.add('hidden');
+            });
+        }
     }
     
     // メニュー画面の初期化
@@ -246,9 +263,8 @@ const ui = (function() {
                     collection.showCollection();
                     break;
                 case 'map':
-                    // マップ画面が表示されたら描画更新
-                    const mapCanvas = document.getElementById('mapCanvas');
-                    if (mapCanvas && typeof world.showFullMap === 'function') {
+                    // マップ画面の表示と描画
+                    if (typeof world.showFullMap === 'function') {
                         world.showFullMap();
                     }
                     break;

@@ -495,46 +495,24 @@ const world = (function() {
 
     // 全体マップの表示
     function showFullMap() {
-        // マップ画面を生成
-        let mapScreen = document.getElementById('map-screen');
-        
-        if (!mapScreen) {
-            mapScreen = document.createElement('div');
-            mapScreen.id = 'map-screen';
-            mapScreen.className = 'screen hidden';
-            
-            mapScreen.innerHTML = `
-                <div class="screen-header">
-                    <h2>ワールドマップ</h2>
-                    <div class="close-button">×</div>
-                </div>
-                <div class="map-content">
-                    <canvas id="mapCanvas"></canvas>
-                </div>
-            `;
-            
-            document.getElementById('game-container').appendChild(mapScreen);
-            
-            // 閉じるボタンのイベント設定
-            const closeButton = mapScreen.querySelector('.close-button');
-            closeButton.addEventListener('click', function() {
-                mapScreen.classList.add('hidden');
-            });
-        }
+        // マップ画面を取得
+        const mapScreen = document.getElementById('map-screen');
+        if (!mapScreen) return;
         
         // マップを表示
         mapScreen.classList.remove('hidden');
         
         // マップキャンバスを更新
         const mapCanvas = document.getElementById('mapCanvas');
-        if (mapCanvas) {
-            const mapWidth = mapScreen.clientWidth;
-            const mapHeight = mapScreen.clientHeight - 50; // ヘッダー分を引く
-            
-            mapCanvas.width = mapWidth;
-            mapCanvas.height = mapHeight;
-            
-            const mapCtx = mapCanvas.getContext('2d');
+        if (!mapCanvas) return;
+        
+        const mapWidth = mapScreen.clientWidth;
+        const mapHeight = mapScreen.clientHeight - 50; // ヘッダー分を引く
+        
+        mapCanvas.width = mapWidth;
+        mapCanvas.height = mapHeight;
+        
+        const mapCtx = mapCanvas.getContext('2d');
             
             // マップ背景
             mapCtx.fillStyle = '#f0f7f1';
